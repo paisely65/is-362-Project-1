@@ -1,0 +1,483 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# IS 362 – Project 1\n",
+    "\n",
+    "### Assignment\n",
+    "\n",
+    "The chart above describes arrival delays for two airlines across five destinations. Your task is to:\n",
+    "1. Create a .CSV file (or optionally, a MySQL database!) that includes all of the information below. You may change\n",
+    "the structure of the information as you like.\n",
+    "2. Read the information from your .CSV file into pandas, and perform analysis to compare the arrival delays for the\n",
+    "two airlines.\n",
+    "3. Your code should be in a Jupyter (IPython) notebook (in GitHub), and should include narrative descriptions of your\n",
+    "analysis and conclusions."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Alaska_On_Time</th>\n",
+       "      <th>Alaska_Delayed</th>\n",
+       "      <th>AMWest_On_Time</th>\n",
+       "      <th>AMWest_Delayed</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Destination</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Los Angeles</th>\n",
+       "      <td>497</td>\n",
+       "      <td>62</td>\n",
+       "      <td>694</td>\n",
+       "      <td>117</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Phoenix</th>\n",
+       "      <td>221</td>\n",
+       "      <td>12</td>\n",
+       "      <td>4840</td>\n",
+       "      <td>415</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>San Diego</th>\n",
+       "      <td>212</td>\n",
+       "      <td>20</td>\n",
+       "      <td>383</td>\n",
+       "      <td>65</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>San Francisco</th>\n",
+       "      <td>503</td>\n",
+       "      <td>102</td>\n",
+       "      <td>320</td>\n",
+       "      <td>129</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Seattle</th>\n",
+       "      <td>1841</td>\n",
+       "      <td>305</td>\n",
+       "      <td>201</td>\n",
+       "      <td>61</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                Alaska_On_Time  Alaska_Delayed  AMWest_On_Time  AMWest_Delayed\n",
+       "Destination                                                                   \n",
+       "Los Angeles                497              62             694             117\n",
+       "Phoenix                    221              12            4840             415\n",
+       "San Diego                  212              20             383              65\n",
+       "San Francisco              503             102             320             129\n",
+       "Seattle                   1841             305             201              61"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# First, I turned the table from the assignment into a simple CSV file.\n",
+    "# Import the CSV file and set the Destination column as the index\n",
+    "\n",
+    "df = pd.read_csv('IS362 Project 1.csv', index_col='Destination')\n",
+    "\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Destination\n",
+       "Los Angeles       11.091234\n",
+       "Phoenix            5.150215\n",
+       "San Diego          8.620690\n",
+       "San Francisco     16.859504\n",
+       "Seattle           14.212488\n",
+       "Name: Alaska_Percent_Delayed, dtype: float64"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# We calculate the percent of Alaska Airlines flights that were delayed for each of the 5 destinations\n",
+    "# The on time flights divided by the delayed flights times 100 gives you the percent of total flights delayed.\n",
+    "# We set the results of the calculation to a new column called \"Alaska_Percent_Delayed\"\n",
+    "\n",
+    "df['Total_Alaska_Flights'] = df['Alaska_On_Time'] + df['Alaska_Delayed']\n",
+    "\n",
+    "df['Alaska_Percent_Delayed'] = (df['Alaska_Delayed'] / df['Total_Alaska_Flights']) * 100\n",
+    "\n",
+    "df['Alaska_Percent_Delayed']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Destination\n",
+       "Los Angeles       14.426634\n",
+       "Phoenix            7.897241\n",
+       "San Diego         14.508929\n",
+       "San Francisco     28.730512\n",
+       "Seattle           23.282443\n",
+       "Name: AMWest_Percent_Delayed, dtype: float64"
+      ]
+     },
+     "execution_count": 24,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# We do the same thing for the AM West flights\n",
+    "# We set the results of the calculation to a new column called \"AMWest_Percent_Delayed\"\n",
+    "\n",
+    "df['Total_Alaska_Flights'] = df['AMWest_Delayed'] + df['AMWest_On_Time']\n",
+    "\n",
+    "df['AMWest_Percent_Delayed'] = (df['AMWest_Delayed'] / df['Total_Alaska_Flights']) * 100\n",
+    "\n",
+    "df['AMWest_Percent_Delayed']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Alaska_Percent_Delayed</th>\n",
+       "      <th>AMWest_Percent_Delayed</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Destination</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Los Angeles</th>\n",
+       "      <td>11.091234</td>\n",
+       "      <td>14.426634</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Phoenix</th>\n",
+       "      <td>5.150215</td>\n",
+       "      <td>7.897241</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>San Diego</th>\n",
+       "      <td>8.620690</td>\n",
+       "      <td>14.508929</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>San Francisco</th>\n",
+       "      <td>16.859504</td>\n",
+       "      <td>28.730512</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Seattle</th>\n",
+       "      <td>14.212488</td>\n",
+       "      <td>23.282443</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                Alaska_Percent_Delayed  AMWest_Percent_Delayed\n",
+       "Destination                                                   \n",
+       "Los Angeles                  11.091234               14.426634\n",
+       "Phoenix                       5.150215                7.897241\n",
+       "San Diego                     8.620690               14.508929\n",
+       "San Francisco                16.859504               28.730512\n",
+       "Seattle                      14.212488               23.282443"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# We can visually compare the delays of the two airlines at each destination\n",
+    "# Clearly we see that AM West airline has a greater percent of flights delayed at every destination.\n",
+    "\n",
+    "df[['Alaska_Percent_Delayed', 'AMWest_Percent_Delayed']]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Destination\n",
+       "Los Angeles       AMWest\n",
+       "Phoenix           AMWest\n",
+       "San Diego         AMWest\n",
+       "San Francisco     AMWest\n",
+       "Seattle           AMWest\n",
+       "Name: Most_Delayed_Airline, dtype: object"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Here we are iterating through the dataframe to compare the delay percentages for the two airlines at each \n",
+    "# destination. If the delay percentage for Alaska airlines is greater than AM West, we set a value in new column called \n",
+    "# \"Most_Delayed_Airline\" to \"Alaska\" otherwise \"AMWest\" is the most delayed.\n",
+    "# We see that AMWest is consistently the most delayed airline.\n",
+    "\n",
+    "for index, row in df.iterrows():\n",
+    "    if row[\"Alaska_Percent_Delayed\"] > row[\"AMWest_Percent_Delayed\"]:\n",
+    "        df.loc[index, 'Most_Delayed_Airline'] = 'Alaska'\n",
+    "    else:\n",
+    "        df.loc[index, 'Most_Delayed_Airline'] = 'AMWest'\n",
+    "\n",
+    "df['Most_Delayed_Airline']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Alaska_On_Time</th>\n",
+       "      <th>Alaska_Delayed</th>\n",
+       "      <th>AMWest_On_Time</th>\n",
+       "      <th>AMWest_Delayed</th>\n",
+       "      <th>Alaska_Percent_Delayed</th>\n",
+       "      <th>AMWest_Percent_Delayed</th>\n",
+       "      <th>Most_Delayed_Airline</th>\n",
+       "      <th>Most_Delayed_Airline_Alternate</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Destination</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Los Angeles</th>\n",
+       "      <td>497</td>\n",
+       "      <td>62</td>\n",
+       "      <td>694</td>\n",
+       "      <td>117</td>\n",
+       "      <td>12.474849</td>\n",
+       "      <td>16.858790</td>\n",
+       "      <td>AMWest</td>\n",
+       "      <td>AMWest</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Phoenix</th>\n",
+       "      <td>221</td>\n",
+       "      <td>12</td>\n",
+       "      <td>4840</td>\n",
+       "      <td>415</td>\n",
+       "      <td>5.429864</td>\n",
+       "      <td>8.574380</td>\n",
+       "      <td>AMWest</td>\n",
+       "      <td>AMWest</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>San Diego</th>\n",
+       "      <td>212</td>\n",
+       "      <td>20</td>\n",
+       "      <td>383</td>\n",
+       "      <td>65</td>\n",
+       "      <td>9.433962</td>\n",
+       "      <td>16.971279</td>\n",
+       "      <td>AMWest</td>\n",
+       "      <td>AMWest</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>San Francisco</th>\n",
+       "      <td>503</td>\n",
+       "      <td>102</td>\n",
+       "      <td>320</td>\n",
+       "      <td>129</td>\n",
+       "      <td>20.278330</td>\n",
+       "      <td>40.312500</td>\n",
+       "      <td>AMWest</td>\n",
+       "      <td>AMWest</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Seattle</th>\n",
+       "      <td>1841</td>\n",
+       "      <td>305</td>\n",
+       "      <td>201</td>\n",
+       "      <td>61</td>\n",
+       "      <td>16.567083</td>\n",
+       "      <td>30.348259</td>\n",
+       "      <td>AMWest</td>\n",
+       "      <td>AMWest</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                Alaska_On_Time  Alaska_Delayed  AMWest_On_Time  \\\n",
+       "Destination                                                      \n",
+       "Los Angeles                497              62             694   \n",
+       "Phoenix                    221              12            4840   \n",
+       "San Diego                  212              20             383   \n",
+       "San Francisco              503             102             320   \n",
+       "Seattle                   1841             305             201   \n",
+       "\n",
+       "                AMWest_Delayed  Alaska_Percent_Delayed  \\\n",
+       "Destination                                              \n",
+       "Los Angeles                117               12.474849   \n",
+       "Phoenix                    415                5.429864   \n",
+       "San Diego                   65                9.433962   \n",
+       "San Francisco              129               20.278330   \n",
+       "Seattle                     61               16.567083   \n",
+       "\n",
+       "                AMWest_Percent_Delayed Most_Delayed_Airline  \\\n",
+       "Destination                                                   \n",
+       "Los Angeles                  16.858790               AMWest   \n",
+       "Phoenix                       8.574380               AMWest   \n",
+       "San Diego                    16.971279               AMWest   \n",
+       "San Francisco                40.312500               AMWest   \n",
+       "Seattle                      30.348259               AMWest   \n",
+       "\n",
+       "               Most_Delayed_Airline_Alternate  \n",
+       "Destination                                    \n",
+       "Los Angeles                            AMWest  \n",
+       "Phoenix                                AMWest  \n",
+       "San Diego                              AMWest  \n",
+       "San Francisco                          AMWest  \n",
+       "Seattle                                AMWest  "
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# A review of the dataframe with the new columns\n",
+    "\n",
+    "df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "## ADD conclusion"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.5.1"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 0
+}
